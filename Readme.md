@@ -97,3 +97,60 @@ classDiagram
 | Association | Team end | Player end |
 |-------------|---------|------------|
 | Team ↔ Player | `1`: a player belongs to exactly one team at a time | `0..*`: a team may have zero or more players |
+
+
+## Exercise 4: Customer Orders
+
+### Relationships
+
+| Pair | Relationship | Why |
+|------|-------------|-----|
+| `Order` → `OrderLine` | **Composition** (filled diamond ◆) | OrderLines cannot exist without their Order. If the Order is canceled, all OrderLines are also removed. The Order owns and controls their lifecycle. |
+| `OrderLine` → `Product` | **Aggregation** (hollow diamond ◇) | Products exist independently of any single OrderLine. They survive if an OrderLine is removed, and the same Product can appear in many OrderLines across many Orders. |
+| `Customer` → `Order` | **Aggregation** (hollow diamond ◇) | Orders have value independent of the Customer object's lifecycle — they're typically kept as business/legal records even after a customer account is deleted. Unlike OrderLines, an Order doesn't become meaningless without its Customer. |
+
+
+### Class Diagram
+
+```mermaid
+classDiagram
+    class Customer {
+        - orders: List~Order~
+    }
+    class Order {
+        - orderLines: List~OrderLine~
+    }
+    class OrderLine {
+        - product: Product
+        - quantity: int
+    }
+    class Product {
+    }
+
+    Customer "1" o-- "0..*" Order : places
+    Order "1" *-- "1..*" OrderLine : contains
+    OrderLine "0..*" o-- "1" Product : refers to
+```
+
+### Arrow types
+
+- `*--` **Composition**: filled diamond on the owning side (`Order`).  
+  The child (`OrderLine`) cannot exist without the parent; destroyed together.
+
+- `o--` **Aggregation**: hollow diamond on the containing side (`Customer` and `OrderLine`).  
+  The contained objects (`Order` and `Product`) have an independent lifecycle and can be shared across multiple containers.
+  
+
+### Multiplicity
+| Association | Customer end | Order end |
+|-------------|---------|----------|
+| Customer ↔ Order | `1`: an order belongs to exactly one customer | `0..*`: a customer may have zero or more orders |
+
+| Association | Order end | OrderLine end |
+|-------------|---------|------------|
+| Order ↔ OrderLine | `1`: an order line belongs to exactly one order | `1..*`: an order must have at least one order line |
+
+| Association | OrderLine end | Product end |
+|-------------|---------|------------|
+| OrderLine ↔ Product | `0..*`: a product may appear in zero or more order lines | `1`: an order line refers to exactly one product |
+
