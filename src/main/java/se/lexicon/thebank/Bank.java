@@ -19,13 +19,13 @@ public class Bank {
     
     public void processAllAccounts() {
         for (Account account : accounts) {
-            // Process each account
+            account.processMonth();
         }
     }
     
     public void printAllSummaries() {
         for (Account account : accounts) {
-            // Print summary for each account
+            account.printSummary();
         }
     }
 }

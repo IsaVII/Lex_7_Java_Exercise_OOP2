@@ -11,6 +11,7 @@ public class CheckingAccount extends Account {
     
     @Override
     public void processMonth() {
-        
+        withdraw(monthlyFee);
+        IO.println(String.format("%s: monthly fee charged",  getHolder()));
     }
 }

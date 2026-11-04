@@ -11,6 +11,7 @@ public class SavingsAccount extends Account {
     
     @Override
     public void processMonth() {
-        
+        deposit(getBalance() * interestRate);
+        IO.println(String.format("%s: interest credited",  getHolder()));
     }
 }

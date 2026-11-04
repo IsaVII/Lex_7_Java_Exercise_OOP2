@@ -12,6 +12,7 @@ public class LoanAccount extends Account {
     
     @Override
     public void processMonth() {
-        
+        deposit(getBalance() * loanRate);
+        IO.println(String.format("%s: loan interest added",  getHolder()));
     }
 }
