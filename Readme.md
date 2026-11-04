@@ -50,3 +50,50 @@ classDiagram
 | Association | Department end | Lecturer end |
 |-------------|---------------|--------------|
 | Department ↔ Lecturer | `1..*`: a lecturer teaches in at least one department | `0..*`: a department may have zero or more lecturers |
+
+
+## Exercise 3: Sports Club
+
+### Relationships
+
+| Pair | Relationship | Why |
+|------|-------------|-----|
+| `Club` → `Team` | **Composition** (filled diamond ◆) | Teams cannot exist without their club. If the club is dissolved, all teams cease to exist with it. The club owns and controls their lifecycle. |
+| `Team` → `Player` | **Aggregation** (hollow diamond ◇) | Players exist independently of any single team. They survive if a team is dissolved and can be reassigned. A player can be transferred to another club or loaned to a different team. If the team is disbanded, the player still exists. |
+
+### Class Diagram
+
+```mermaid
+classDiagram
+    class Club {
+        - teams: List~Team~
+    }
+    class Team {
+        - name: String
+        - players: List~Player~
+
+    }
+    class Player {
+    }
+
+    Club "1" *-- "1..3" Team : contains
+    Team "1" o-- "0..*" Player : has
+```
+
+### Arrow types
+
+- `*--` **Composition**: filled diamond on the owning side (`Club`).  
+  The child (`Team`) cannot exist without the parent; destroyed together.
+
+- `o--` **Aggregation**: hollow diamond on the containing side (`Team`).  
+  The contained object (`Player`) has an independent lifecycle and can be shared across multiple containers.
+
+### Multiplicity
+
+| Association | Club end | Team end |
+|-------------|---------|----------|
+| Club ↔ Team | `1`: a team belongs to exactly one club | `1..3`: a club has at least one team |
+
+| Association | Team end | Player end |
+|-------------|---------|------------|
+| Team ↔ Player | `1`: a player belongs to exactly one team at a time | `0..*`: a team may have zero or more players |
