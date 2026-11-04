@@ -2,15 +2,16 @@ package se.lexicon.thebank;
 
 import se.lexicon.thebank.accounts.Account;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Bank {
     private String name;
     private List<Account> accounts;
     
-    public Bank(String name, List<Account> accounts) {
+    public Bank(String name) {
         this.name = name;
-        this.accounts = accounts;
+        this.accounts = new ArrayList<>();
     }
     
     public void addAccount(Account account) {
