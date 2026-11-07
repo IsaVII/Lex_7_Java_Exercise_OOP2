@@ -89,19 +89,41 @@ classDiagram
 ```mermaid
 classDiagram
     class Club {
+        - name: String
         - teams: List~Team~
+        + Club(name String)
+        + addTeam(team Team)
+        + disbandTeam(team Team, reassignTo Team)
+        + close()
     }
     class Team {
         - name: String
         - players: List~Player~
-
+        + Team(name String)
+        + addPlayer(player Player)
+        + removePlayer(player Player)
+        + transferPlayerTo(player Player, target Team)
     }
     class Player {
+        - name: String
+        + Player(name String)
+        + getName() String
     }
 
     Club "1" *-- "1..3" Team : contains
     Team "1" o-- "0..*" Player : has
 ```
+
+### Methods
+
+| Method | Why it is needed |
+|--------|-------------------|
+| `Club.addTeam(team)` | "A football club runs three teams" — the club must be able to build up its own composition of teams. |
+| `Club.disbandTeam(team, reassignTo)` | "If a team is disbanded, the players still exist — they remain registered with the club and can be reassigned." Moves the players into `reassignTo` before the team itself is discarded, so the players (aggregated, independent objects) survive. |
+| `Club.close()` | "If the club shuts down, its teams cease to exist." Clears the composed teams — demonstrating that their lifecycle is tied to the club's. |
+| `Team.addPlayer(player)` / `removePlayer(player)` | "Players are assigned to a team" and can be "loaned to a different team" — a team needs controlled ways to gain and lose players without destroying them (aggregation). |
+| `Team.transferPlayerTo(player, target)` | "A player can be transferred to another club or loaned to a different team." Removes the player from this team and adds it to `target` — the same operation covers both a loan and a transfer, since `target` may belong to a different club. |
+| `Player.getName()` | Players are shared, independent objects — other classes need read access to identify one without exposing its internal state. |
 
 ### Arrow types
 
