@@ -20,18 +20,41 @@
 ```mermaid
 classDiagram
     class University {
+        - name: String
         - departments: List~Department~
+        + University(name String)
+        + addDepartment(department Department)
+        + dissolveDepartment(department Department, reassignTo Department)
+        + close()
     }
     class Department {
         - name: String
         - lecturers: List~Lecturer~
+        + Department(name String)
+        + addLecturer(lecturer Lecturer)
+        + removeLecturer(lecturer Lecturer)
+        + transferLecturerTo(lecturer Lecturer, target Department)
     }
     class Lecturer {
+        - name: String
+        + Lecturer(name String)
+        + getName() String
     }
 
     University "1" *-- "1..*" Department : contains
     Department "1..*" o-- "0..*" Lecturer : employs
 ```
+
+### Methods
+
+| Method | Why it is needed |
+|--------|-------------------|
+| `University.addDepartment(department)` | "A university is made up of several departments" — the university must be able to grow its own composition. |
+| `University.dissolveDepartment(department, reassignTo)` | "If a department is dissolved, its lecturers do not disappear — they can be reassigned elsewhere." Moves the lecturers into `reassignTo` before the department itself is discarded, so the lecturers (aggregated, independent objects) survive. |
+| `University.close()` | "If the university closes, its departments cease to exist with it." Clears the composed departments — demonstrating that their lifecycle is tied to the university's. |
+| `Department.addLecturer(lecturer)` / `removeLecturer(lecturer)` | "Each department has a number of lecturers" and a lecturer "may move between departments" — a department needs controlled ways to gain and lose lecturers without destroying them (aggregation). |
+| `Department.transferLecturerTo(lecturer, target)` | "A lecturer can teach across more than one department and may move between departments at the end of the year." Removes the lecturer from this department and adds it to `target`, leaving the `Lecturer` object itself untouched. |
+| `Lecturer.getName()` | Lecturers are shared, independent objects — other classes need read access to identify one without exposing its internal state. |
 
 ### Arrow types
 
