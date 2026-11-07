@@ -160,22 +160,47 @@ classDiagram
 ```mermaid
 classDiagram
     class Customer {
+        - name: String
         - orders: List~Order~
+        + Customer(name String)
+        + placeOrder(order Order)
+        + removeOrder(order Order)
     }
     class Order {
         - orderLines: List~OrderLine~
+        + Order()
+        + addOrderLine(orderLine OrderLine)
+        + removeOrderLine(orderLine OrderLine)
+        + cancel()
     }
     class OrderLine {
         - product: Product
         - quantity: int
+        + OrderLine(product Product, quantity int)
+        + getProduct() Product
+        + getQuantity() int
     }
     class Product {
+        - name: String
+        + Product(name String)
+        + getName() String
     }
 
     Customer "1" o-- "0..*" Order : places
     Order "1" *-- "1..*" OrderLine : contains
     OrderLine "0..*" o-- "1" Product : refers to
 ```
+
+### Methods
+
+| Method | Why it is needed |
+|--------|-------------------|
+| `Customer.placeOrder(order)` | "When a customer places an order in an online shop" — the customer must be able to add an order to its own list. |
+| `Customer.removeOrder(order)` | Orders are aggregated, not composed, with the customer — "Orders ... are typically kept as business/legal records even after a customer account is deleted." A customer must be able to detach an order without destroying it. |
+| `Order.addOrderLine(orderLine)` / `removeOrderLine(orderLine)` | "The order is made up of order lines — one line per product, recording what was ordered and how many units." The order needs controlled ways to build and adjust its own lines. |
+| `Order.cancel()` | "If the order is cancelled and deleted, its order lines have no meaning and are removed with it." Clears the composed order lines — demonstrating that their lifecycle is tied to the order's. |
+| `OrderLine.getProduct()` / `getQuantity()` | An order line records "what was ordered and how many units" — other classes (e.g. billing, inventory) need read access without exposing internal state. |
+| `Product.getName()` | Products "exist on their own" and are shared across many order lines — other classes need read access to identify one without exposing its internal state. |
 
 ### Arrow types
 
